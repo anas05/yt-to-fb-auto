@@ -54,12 +54,19 @@ def get_latest_video():
 
 def get_transcript(video_id):
     try:
-        # Nstkhdmo get_transcript مباشرة باش نتfado ay mochkil f list_transcripts
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        # Try fetching transcript using instance or fallback safely
+        try:
+            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        except Exception:
+            # Fallback for object-based fetching if needed
+            ytt = YouTubeTranscriptApi()
+            fetched = ytt.list_transcripts(video_id)
+            transcript_list = fetched.find_transcript(['ar', 'fr', 'en']).fetch()
+
         full_text = " ".join([item['text'] for item in transcript_list])
         return full_text
     except Exception as e:
-        print(f"Warning: Couldn't fetch transcript: {e}")
+        print(f"Warning: Couldn't fetch transcript ({e}), proceeding with title only.")
         return None
 
 def generate_news_summary(title, transcript):
@@ -76,7 +83,7 @@ Transcript dyal video:
 
 L-Format dyal Post:
 - Headline mchawqa (Headline / عنوان عاجل).
-- Résumé dyal 3-5 nqat mhemin mn chno tgal f video.
+- Résumé dyal 3-5 nqat mhemin mn chno tgal f video (aw 3la l-anwan ila ma-kanch transcript).
 - Call to Action sghir bach ychoufo la video kamla.
 - Hashtags mnasbin.
 
@@ -84,7 +91,7 @@ Ma-tdirch مقدمات b7al "Ha howa l-post". A3tini l-texte dyal l-post direct!
 """
 
     response = client.models.generate_content(
-        model='gemini-2.0-flash',  # Beddelna l-model l 2.0-flash s-sahih
+        model='gemini-3.8-flash',  # Beddelnah l l-model l-jdid li t-lba
         contents=prompt,
     )
     return response.text
