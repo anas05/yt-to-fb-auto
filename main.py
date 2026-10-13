@@ -52,8 +52,9 @@ def get_latest_video():
 
 def get_transcript(video_id):
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
-        full_text = " ".join([item['text'] for item in transcript_list])
+        fetched = YouTubeTranscriptApi.list_transcripts(video_id)
+        transcript = fetched.find_transcript(['en', 'fr', 'ar']).fetch()
+        full_text = " ".join([item['text'] for item in transcript])
         return full_text
     except Exception as e:
         print(f"Warning: Couldn't fetch transcript ({e}), proceeding with title only.")
@@ -79,7 +80,7 @@ Post Format:
 Do not include conversational filler like "Here is your post". Give the direct post text only!
 """
         response = client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-2.0-flash',
             contents=prompt,
         )
         return response.text
