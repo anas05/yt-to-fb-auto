@@ -27,7 +27,19 @@ def get_latest_video():
     rss_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
     print(f"DEBUG: Fetching URL -> {rss_url}")
     
-    feed = feedparser.parse(rss_url)
+    # Nstkhdmo requests b User-Agent dyal browser 7i9i bach YouTube ma-y-bloquiwnech
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    
+    response = requests.get(rss_url, headers=headers)
+    print(f"DEBUG: Response status code = {response.status_code}")
+    
+    if response.status_code != 200:
+        print(f"Error fetching RSS: {response.text}")
+        return None
+
+    feed = feedparser.parse(response.text)
     
     print(f"DEBUG: Feed entries count = {len(feed.entries)}")
     if hasattr(feed, 'bozo_exception'):
