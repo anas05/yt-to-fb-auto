@@ -4,10 +4,11 @@ import requests
 from google import genai
 from youtube_transcript_api import YouTubeTranscriptApi
 
-CHANNEL_ID = os.environ.get("UCFFvZXT9e0lporYRuchAGNNQ")
-GEMINI_API_KEY = os.environ.get("AQ.Ab8RN6ISofRSeB-epF87JeWsUTwX00s0RTUYNi_sWd4TyMewww")
-FB_PAGE_ID = os.environ.get("100086431609629")
-FB_ACCESS_TOKEN = os.environ.get("EAAbgey7IPigBShZA50bgItHNZCj5NeiZAgysVgqKCJew8ZAMqQ8ZC2KbDT2ztmxtKWZAvNKeMgBCTud6fHypI9ZBMAzV7VRiSngsOO57LiCozrRiwqL6BEnmZAXmurbZAZCfycwnB2tEw64VAkKdOVO6YrEWu7ZCmfhmrqH5gDxFFZBYOtlYwwuAlrFO3LUZBDsjDKpgZBoTaqZCJ2HIPNyFhnhTZCQyEGVVWVIk5lRWD1JOqbJRXqumwpvj8zHLZAU4wZB3VVtaZAMZBab85xZANKPhlD7XBZB1qDqFyVZAMrhmhS2xAZDZD")
+# Pull dynamic environment variables from GitHub Secrets
+CHANNEL_ID = os.environ.get("YT_CHANNEL_ID")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
+FB_ACCESS_TOKEN = os.environ.get("FB_ACCESS_TOKEN")
 
 POSTED_VIDEOS_FILE = "posted_videos.txt"
 
@@ -73,9 +74,13 @@ Transcript dyal video:
 
 L-Format dyal Post:
 - Headline mchawqa (Headline / عنوان عاجل).
+
 - Résumé dyal 3-5 nqat mhemin mn chno tgal f video.
+
 - Call to Action sghir bach ychoufo la video kamla.
+
 - Hashtags mnasbin.
+
 
 Ma-tdirch مقدمات b7al "Ha howa l-post". A3tini l-texte dyal l-post direct!
 """
