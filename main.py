@@ -39,13 +39,11 @@ def get_latest_video():
             latest = info['entries'][0]
             video_id = latest.get('id')
             title = latest.get('title')
-            link = f"https://www.youtube.com/watch?v={video_id}"
             thumbnail_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
 
             return {
                 "id": video_id,
                 "title": title,
-                "link": link,
                 "thumbnail": thumbnail_url
             }
     except Exception as e:
@@ -54,15 +52,7 @@ def get_latest_video():
 
 def get_transcript(video_id):
     try:
-        # Try fetching transcript using instance or fallback safely
-        try:
-            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
-        except Exception:
-            # Fallback for object-based fetching if needed
-            ytt = YouTubeTranscriptApi()
-            fetched = ytt.list_transcripts(video_id)
-            transcript_list = fetched.find_transcript(['ar', 'fr', 'en']).fetch()
-
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
         full_text = " ".join([item['text'] for item in transcript_list])
         return full_text
     except Exception as e:
@@ -70,39 +60,39 @@ def get_transcript(video_id):
         return None
 
 def generate_news_summary(title, transcript):
-    client = genai.Client(api_key=GEMINI_API_KEY)
-    
-    prompt = f"""
-Anta journalist w content creator f Facebook.
-Swb post b l-Darija/العربية b style dyal News/Akhbar جذاب w professionel 3la had l-video.
+    try:
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        prompt = f"""
+You are a professional journalist and Facebook content creator.
+Write an engaging, professional news-style Facebook post summarizing this video in English.
 
-Titre dyal video: {title}
+Video Title: {title}
 
-Transcript dyal video:
+Video Transcript:
 {transcript if transcript else 'No transcript available. Base summary on the title.'}
 
-L-Format dyal Post:
-- Headline mchawqa (Headline / عنوان عاجل).
-- Résumé dyal 3-5 nqat mhemin mn chno tgal f video (aw 3la l-anwan ila ma-kanch transcript).
-- Call to Action sghir bach ychoufo la video kamla.
-- Hashtags mnasbin.
+Post Format:
+- Catchy headline (Breaking News / Headline).
+- 3-5 key bullet points summarizing the main takeaways.
+- Relevant hashtags.
 
-Ma-tdirch مقدمات b7al "Ha howa l-post". A3tini l-texte dyal l-post direct!
+Do not include conversational filler like "Here is your post". Give the direct post text only!
 """
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=prompt,
+        )
+        return response.text
+    except Exception as e:
+        print(f"Warning: Gemini API error ({e}). Using smart fallback summary.")
+        return f"🚨 **Breaking News from CaraLanelle!**\n\n📺 **{title}**\n\n🔥 Check out the latest updates in this new video!\n\n#CaraLanelle #News"
 
-    response = client.models.generate_content(
-        model='gemini-3.8-flash',  # Beddelnah l l-model l-jdid li t-lba
-        contents=prompt,
-    )
-    return response.text
-
-def post_to_facebook(message, image_url, video_link):
-    full_message = f"{message}\n\n📌 Chahd l-video kamel hna: {video_link}"
+def post_to_facebook(message, image_url):
     url = f"https://graph.facebook.com/v19.0/{FB_PAGE_ID}/photos"
     
     payload = {
         "url": image_url,
-        "caption": full_message,
+        "caption": message,
         "access_token": FB_ACCESS_TOKEN
     }
     
@@ -131,11 +121,11 @@ def main():
     print("Fetching transcript...")
     transcript = get_transcript(video['id'])
 
-    print("Generating news summary with Gemini...")
+    print("Generating news summary in English...")
     summary = generate_news_summary(video['title'], transcript)
 
-    print("Posting to Facebook Page...")
-    success = post_to_facebook(summary, video['thumbnail'], video['link'])
+    print("Posting photo + English summary to Facebook Page (no link)...")
+    success = post_to_facebook(summary, video['thumbnail'])
 
     if success:
         save_posted_video(video['id'])
