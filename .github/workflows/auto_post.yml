@@ -17,10 +17,10 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install feedparser requests google-genai youtube-transcript-api
+          pip install requests yt-dlp google-genai youtube-transcript-api
 
       - name: Run Auto Post Script
         env:
