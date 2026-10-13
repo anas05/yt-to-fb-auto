@@ -7,7 +7,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 CHANNEL_ID = os.environ.get("UCFFvZXT9e0lporYRuchAGNNQ")
 GEMINI_API_KEY = os.environ.get("AQ.Ab8RN6ISofRSeB-epF87JeWsUTwX00s0RTUYNi_sWd4TyMewww")
 FB_PAGE_ID = os.environ.get("100086431609629")
-FB_ACCESS_TOKEN = os.environ.get("1935669530738216")
+FB_ACCESS_TOKEN = os.environ.get("EAAbgey7IPigBShZA50bgItHNZCj5NeiZAgysVgqKCJew8ZAMqQ8ZC2KbDT2ztmxtKWZAvNKeMgBCTud6fHypI9ZBMAzV7VRiSngsOO57LiCozrRiwqL6BEnmZAXmurbZAZCfycwnB2tEw64VAkKdOVO6YrEWu7ZCmfhmrqH5gDxFFZBYOtlYwwuAlrFO3LUZBDsjDKpgZBoTaqZCJ2HIPNyFhnhTZCQyEGVVWVIk5lRWD1JOqbJRXqumwpvj8zHLZAU4wZB3VVtaZAMZBab85xZANKPhlD7XBZB1qDqFyVZAMrhmhS2xAZDZD")
 
 POSTED_VIDEOS_FILE = "posted_videos.txt"
 
