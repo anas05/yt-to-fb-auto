@@ -1,11 +1,10 @@
 import os
-import feedparser
 import requests
 from google import genai
 from youtube_transcript_api import YouTubeTranscriptApi
+from yt_dlp import YoutubeDL
 
-# Pull dynamic environment variables from GitHub Secrets
-CHANNEL_ID = os.environ.get("YT_CHANNEL_ID")
+CHANNEL_HANDLE = "https://www.youtube.com/@CaraLanelle/videos"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
 FB_ACCESS_TOKEN = os.environ.get("FB_ACCESS_TOKEN")
@@ -23,44 +22,35 @@ def save_posted_video(video_id):
         f.write(f"{video_id}\n")
 
 def get_latest_video():
-    print(f"DEBUG: Using CHANNEL_ID = {CHANNEL_ID}")
-    rss_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
-    print(f"DEBUG: Fetching URL -> {rss_url}")
-    
-    # Nstkhdmo requests b User-Agent dyal browser 7i9i bach YouTube ma-y-bloquiwnech
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    print(f"DEBUG: Fetching latest video from -> {CHANNEL_HANDLE}")
+    ydl_opts = {
+        'playlist_items': '1',
+        'extract_flat': 'in_playlist',
+        'quiet': True,
+        'no_warnings': True
     }
-    
-    response = requests.get(rss_url, headers=headers)
-    print(f"DEBUG: Response status code = {response.status_code}")
-    
-    if response.status_code != 200:
-        print(f"Error fetching RSS: {response.text}")
+    try:
+        with YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(CHANNEL_HANDLE, download=False)
+            if not info or 'entries' not in info or not info['entries']:
+                print("No videos found.")
+                return None
+            
+            latest = info['entries'][0]
+            video_id = latest.get('id')
+            title = latest.get('title')
+            link = f"https://www.youtube.com/watch?v={video_id}"
+            thumbnail_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
+
+            return {
+                "id": video_id,
+                "title": title,
+                "link": link,
+                "thumbnail": thumbnail_url
+            }
+    except Exception as e:
+        print(f"Error fetching via yt-dlp: {e}")
         return None
-
-    feed = feedparser.parse(response.text)
-    
-    print(f"DEBUG: Feed entries count = {len(feed.entries)}")
-    if hasattr(feed, 'bozo_exception'):
-        print(f"DEBUG: Feed bozo exception = {feed.bozo_exception}")
-
-    if not feed.entries:
-        print("No videos found in feed.")
-        return None
-
-    latest_entry = feed.entries[0]
-    video_id = latest_entry.yt_videoid
-    title = latest_entry.title
-    link = latest_entry.link
-    thumbnail_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
-
-    return {
-        "id": video_id,
-        "title": title,
-        "link": link,
-        "thumbnail": thumbnail_url
-    }
 
 def get_transcript(video_id):
     try:
@@ -93,13 +83,9 @@ Transcript dyal video:
 
 L-Format dyal Post:
 - Headline mchawqa (Headline / عنوان عاجل).
-
 - Résumé dyal 3-5 nqat mhemin mn chno tgal f video.
-
 - Call to Action sghir bach ychoufo la video kamla.
-
 - Hashtags mnasbin.
-
 
 Ma-tdirch مقدمات b7al "Ha howa l-post". A3tini l-texte dyal l-post direct!
 """
