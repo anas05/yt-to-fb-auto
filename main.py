@@ -54,8 +54,7 @@ def get_latest_video():
 
 def get_transcript(video_id):
     try:
-        ytt = YouTubeTranscriptApi()
-        transcript_list = ytt.list_transcripts(video_id)
+        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
         
         try:
             transcript = transcript_list.find_transcript(['ar', 'fr', 'en'])
