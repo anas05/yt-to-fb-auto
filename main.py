@@ -4,10 +4,10 @@ import requests
 from google import genai
 from youtube_transcript_api import YouTubeTranscriptApi
 
-CHANNEL_ID = os.environ.get("YT_CHANNEL_ID")
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-FB_PAGE_ID = os.environ.get("FB_PAGE_ID")
-FB_ACCESS_TOKEN = os.environ.get("FB_ACCESS_TOKEN")
+CHANNEL_ID = os.environ.get("UCFFvZXT9e0lporYRuchAGNNQ")
+GEMINI_API_KEY = os.environ.get("AQ.Ab8RN6ISofRSeB-epF87JeWsUTwX00s0RTUYNi_sWd4TyMewww")
+FB_PAGE_ID = os.environ.get("100086431609629")
+FB_ACCESS_TOKEN = os.environ.get("1935669530738216")
 
 POSTED_VIDEOS_FILE = "posted_videos.txt"
 
