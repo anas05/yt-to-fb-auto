@@ -23,9 +23,16 @@ def save_posted_video(video_id):
         f.write(f"{video_id}\n")
 
 def get_latest_video():
+    print(f"DEBUG: Using CHANNEL_ID = {CHANNEL_ID}")
     rss_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
+    print(f"DEBUG: Fetching URL -> {rss_url}")
+    
     feed = feedparser.parse(rss_url)
     
+    print(f"DEBUG: Feed entries count = {len(feed.entries)}")
+    if hasattr(feed, 'bozo_exception'):
+        print(f"DEBUG: Feed bozo exception = {feed.bozo_exception}")
+
     if not feed.entries:
         print("No videos found in feed.")
         return None
