@@ -2,12 +2,16 @@ name: YouTube to Facebook Auto-Post
 
 on:
   schedule:
-    - cron: '0 * * * *'
-  workflow_dispatch:
+    - cron: '0 * * * *'  # Kay-khdm kol sa3a automatic
+  workflow_dispatch:      # Kay-khllik t-testih manual
 
 jobs:
   build-and-run:
     runs-on: ubuntu-latest
+
+    # ⚠️ HAD L-PARTIE MHEMMA: Bach GitHub Actions y9dr y-sajjel posted_videos.txt
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout code
@@ -38,4 +42,4 @@ jobs:
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add posted_videos.txt
         git commit -m "Auto-update posted videos list" || exit 0
-        git push
+        git push origin main
