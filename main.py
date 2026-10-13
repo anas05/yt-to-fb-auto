@@ -54,15 +54,9 @@ def get_latest_video():
 
 def get_transcript(video_id):
     try:
-        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
-        
-        try:
-            transcript = transcript_list.find_transcript(['ar', 'fr', 'en'])
-        except:
-            transcript = next(iter(transcript_list))
-
-        data = transcript.fetch()
-        full_text = " ".join([item['text'] for item in data])
+        # Nstkhdmo get_transcript مباشرة باش نتfado ay mochkil f list_transcripts
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        full_text = " ".join([item['text'] for item in transcript_list])
         return full_text
     except Exception as e:
         print(f"Warning: Couldn't fetch transcript: {e}")
@@ -90,7 +84,7 @@ Ma-tdirch مقدمات b7al "Ha howa l-post". A3tini l-texte dyal l-post direct!
 """
 
     response = client.models.generate_content(
-        model='gemini-2.5-flash',
+        model='gemini-2.0-flash',  # Beddelna l-model l 2.0-flash s-sahih
         contents=prompt,
     )
     return response.text
